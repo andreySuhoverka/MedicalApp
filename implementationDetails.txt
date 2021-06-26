@@ -1,0 +1,27 @@
+1. при конвертации спрингом класса ArrayList в json на этапе отдавания данных,
+т.е. когда метод контроллера отработал и спринг должен превратить возвращаемые данне в json,
+по умолчанию он не находит у себя такого конвертера, который умеет это делать и вылетает ошибка
+
+org.springframework.http.converter.HttpMessageNotWritableException: No converter for [class java.util.ArrayList] with preset Content-Type 'null'
+	org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodProcessor.writeWithMessageConverters(AbstractMessageConverterMethodProcessor.java:312)
+	...
+
+для устранения этой ошибки нужно сказать спрингу, чтобы начал использовать эти конвертеры.
+Спринг берёт эти конвертеры из другой библиотеки, которая не подключена была.
+подключаем сначала библиотеку:
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-core</artifactId>
+    <version>2.12.3</version>
+</dependency>
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.12.3</version>
+</dependency>
+
+и включаем в спринге использования конвертеров: добавляем в файл beans.xml строчку
+<mvc:annotation-driven/>
+
+это решение я нашёл тут https://www.javadevjournal.com/spring/spring-http-message-converter/
+после того, как у меня у самого возникла эта ошибка.
